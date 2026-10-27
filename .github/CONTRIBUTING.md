@@ -67,14 +67,14 @@ see "[Working in a codespace](https://github.com/github/docs/blob/main/contribut
 1. Fork the repository.
 
 - Using GitHub Desktop:
-    - [Getting started with GitHub Desktop](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/getting-started-with-github-desktop)
-      will guide you through setting up Desktop.
-    - Once Desktop is set up, you can use it
-      to [fork the repo](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/cloning-and-forking-repositories-from-github-desktop)!
+  - [Getting started with GitHub Desktop](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/getting-started-with-github-desktop)
+    will guide you through setting up Desktop.
+  - Once Desktop is set up, you can use it
+    to [fork the repo](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/cloning-and-forking-repositories-from-github-desktop)!
 
 - Using the command line:
-    - [Fork the repo](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository)
-      so that you can make your changes without affecting the original project until you're ready to merge them.
+  - [Fork the repo](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository)
+    so that you can make your changes without affecting the original project until you're ready to merge them.
 
 2. Install or update to **Node.js**, at the version specified in `.node-version`. For more information,
    see [the development guide](contributing/development.md).
@@ -133,5 +133,5 @@ This site can be developed on Windows, however a few potential gotchas need to b
    write [scripts](/script) in JavaScript instead of Bash.
 4. Filename too long error: There is a 260 character limit for a filename when Git is compiled with `msys`. While the
    suggestions below are not guaranteed to work and could cause other issues, a few workarounds include:
-    - Update Git configuration: `git config --system core.longpaths true`
-    - Consider using a different Git client on Windows
+   - Update Git configuration: `git config --system core.longpaths true`
+   - Consider using a different Git client on Windows

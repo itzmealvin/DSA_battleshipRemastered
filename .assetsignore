@@ -1,0 +1,13 @@
+# Publish only the website. Keep repository metadata, tests and docs private.
+/*
+!/index.html
+!/404.html
+!/favicon.svg
+!/_headers
+!/src/
+/src/*
+!/src/app.js
+!/src/game.js
+!/styles/
+/styles/*
+!/styles/styles.css

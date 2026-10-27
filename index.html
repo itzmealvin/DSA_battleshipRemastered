@@ -1,41 +1,306 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta content="IE=edge" http-equiv="X-UA-Compatible">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Space Wars</title>
-    <link href="./styles/styles.css" rel="stylesheet">
-    <link href="./assets/img/logo.jpg" rel="icon" type="image/xicon">
-    <script src="libs/p5.js"></script>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b1622" />
+    <meta
+      name="description"
+      content="Naval plotting strategy on a 10×10 hydrographic chart. Deploy five ships, read the soundings, and outmaneuver the computer or a friend on one device."
+    />
+    <title>Battleship Remastered — Admiralty Plotting Table</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <script type="module" src="/src/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to plotting table</a>
+    <header class="masthead">
+      <a class="brand" href="/" translate="no">
+        <svg viewBox="0 0 44 44" width="38" height="38" aria-hidden="true">
+          <path
+            d="M4 27h36l-6 9H11zM11 23h22M17 23V13h10v10M22 13V6M7 40h30"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="square"
+          />
+        </svg>
+        <span>Battleship<small>Admiralty chart edition</small></span>
+      </a>
+      <nav aria-label="Game resources">
+        <span class="station-tag">Chart 10×10</span>
+        <button type="button" class="text-button" id="how-to">
+          How to play
+        </button>
+        <button type="button" class="text-button" id="stats">Statistics</button>
+      </nav>
+    </header>
 
-<body>
-<!-- Heading -->
-<h1 id="no-select">SPACE WARS</h1>
+    <main id="main" tabindex="-1">
+      <section class="intro" aria-labelledby="title">
+        <div class="intro-text">
+          <h1 id="title">Sound the depths. Strike from the fog.</h1>
+          <p class="intro-copy">
+            Five ships. One hidden enemy fleet. Choose your coordinates and sink
+            their ships before they sink yours.
+          </p>
+        </div>
+        <svg
+          class="ship-drawing"
+          viewBox="0 0 360 116"
+          width="340"
+          height="110"
+          aria-hidden="true"
+        >
+          <g fill="none" stroke="currentColor" stroke-width="1.4">
+            <path
+              d="M14 82h332l-30 24H48zM58 82V62h226v20M102 62V42h112v20M146 42V24h32v18M162 24V6M162 14h52M216 58l46-12M246 74l50-10M70 74L36 64M26 112h308"
+            />
+            <path
+              d="M90 62v20m36-20v20m36-20v20m36-20v20m36-20v20M116 51h8m8 0h8m8 0h8m8 0h8m8 0h8"
+              stroke-opacity="0.65"
+            />
+            <circle cx="162" cy="14" r="6" />
+          </g>
+        </svg>
+      </section>
 
-<!-- config file -->
-<script src="scripts/config/sketch.js"></script>
+      <div class="workspace">
+        <aside class="command-panel" aria-label="Match controls">
+          <div class="panel-heading">
+            <h2>Match setup</h2>
+          </div>
+          <fieldset id="settings">
+            <legend class="sr-only">Match options</legend>
+            <label for="mode">Opponent</label>
+            <select id="mode" name="mode">
+              <option value="solo">Computer</option>
+              <option value="local">Friend (pass &amp; play)</option>
+            </select>
+            <label for="islands">Waters</label>
+            <select id="islands" name="islands">
+              <option value="0">Open ocean</option>
+              <option value="10">Scattered islands (10 cells)</option>
+              <option value="25">Archipelago (25 cells)</option>
+            </select>
+          </fieldset>
+          <p class="setup-help" id="setup-help">
+            Your fleet is ready. Shuffle to change its formation, then deploy.
+          </p>
+          <button type="button" id="shuffle" class="secondary wide">
+            <span aria-hidden="true">⤨</span> Shuffle fleet
+          </button>
+          <button type="button" id="launch" class="primary wide">
+            Deploy fleet
+          </button>
+          <button type="button" id="new-game" class="secondary wide" hidden>
+            New match
+          </button>
 
-<!-- class files -->
-<script src="scripts/classes/PlayerClass.js"></script>
-<script src="scripts/classes/ShipClass.js"></script>
-<script src="scripts/classes/AnimationClass.js"></script>
-<script src="scripts/classes/BotClass.js"></script>
-<script src="scripts/classes/Button.js"></script>
-<script src="scripts/classes/NetworkClass.js"></script>
+          <div class="fleet-key" aria-label="Target fleet manifest">
+            <div class="fleet-key-head">
+              <h3>Target manifest</h3>
+              <span id="manifest-caption">17 ship cells</span>
+            </div>
+            <ul id="fleet-list"></ul>
+            <p class="manifest-note">A hit earns another shot.</p>
+          </div>
 
-<!-- Game states files -->
-<script src="scripts/states/menuState.js"></script>
-<script src="scripts/states/instructionState.js"></script>
-<script src="scripts/states/winState.js"></script>
-<script src="scripts/states/mapState.js"></script>
-<script src="scripts/states/MultiPlayerOfflineState.js"></script>
-<script src="scripts/states/SinglePlayerState.js"></script>
-<script src="scripts/states/StatisticsState.js"></script>
+          <div class="session">
+            <span>Solo record</span>
+            <strong id="record">0 wins / 0 losses</strong>
+          </div>
+        </aside>
 
-<!--  Draw  -->
-<script src="scripts/draw.js"></script>
-<script src="scripts/swapMap.js"></script>
-</body>
+        <section class="battle-area" aria-label="Battle station">
+          <div class="status-bar">
+            <div class="status-primary">
+              <span class="status-dot" aria-hidden="true"></span>
+              <strong id="phase-label">Ready to deploy</strong>
+            </div>
+            <span class="status-telemetry" id="turn-label"
+              >You have the first shot</span
+            >
+          </div>
+
+          <div class="boards">
+            <section class="board-panel own-panel" aria-labelledby="own-title">
+              <div class="board-heading">
+                <div>
+                  <h2 id="own-title">Your fleet</h2>
+                  <p class="board-caption" id="own-detail">
+                    Keep your formation secret
+                  </p>
+                </div>
+                <span class="board-badge" id="own-count">5 afloat</span>
+              </div>
+              <div class="board-frame">
+                <div
+                  id="own-board"
+                  class="board"
+                  role="group"
+                  aria-label="Your fleet coordinates"
+                ></div>
+              </div>
+              <div class="board-foot">
+                <span><i class="key ship-key" aria-hidden="true"></i>Ship</span>
+                <span
+                  ><i class="key island-key" aria-hidden="true"></i>Island</span
+                >
+                <span
+                  ><i class="key hit-key" aria-hidden="true">×</i>Damaged</span
+                >
+              </div>
+            </section>
+
+            <section
+              class="board-panel target-panel"
+              aria-labelledby="target-title"
+            >
+              <div class="board-heading">
+                <div>
+                  <h2 id="target-title">Enemy fleet</h2>
+                  <p class="board-caption" id="target-detail">
+                    Deploy to begin
+                  </p>
+                </div>
+                <span class="board-badge" id="enemy-count">5 afloat</span>
+              </div>
+              <div class="board-frame target-frame">
+                <div
+                  id="target-board"
+                  class="board"
+                  role="group"
+                  aria-label="Enemy waters. Use arrow keys to move, Enter to fire."
+                ></div>
+              </div>
+              <div class="board-foot">
+                <span
+                  ><i class="key hit-key" aria-hidden="true">×</i>Direct
+                  hit</span
+                >
+                <span
+                  ><i class="key miss-key" aria-hidden="true">•</i>Miss</span
+                >
+                <span
+                  ><i class="key heat-key" aria-hidden="true"></i>Likely
+                  position</span
+                >
+              </div>
+            </section>
+          </div>
+
+          <div class="battle-bottom">
+            <section class="log-panel" aria-labelledby="log-title">
+              <h3 id="log-title">Captain’s log</h3>
+              <p id="announcement" role="status" aria-live="polite">
+                Your ships are in position. The ocean is waiting.
+              </p>
+              <ol id="shot-log" aria-label="Recent shots"></ol>
+            </section>
+
+            <div class="lens-control">
+              <label for="lens">
+                <input type="checkbox" id="lens" name="lens" />
+                <span>Probability lens</span>
+              </label>
+              <p>
+                Highlights likely ship positions using only your previous shots.
+              </p>
+            </div>
+          </div>
+          <p class="keyboard-note">
+            Plot by mouse, touch, or keyboard: use arrow keys, Home/End, or
+            PageUp/PageDown on the target chart, then press Enter to fire.
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <span>Admiralty Hydrographic Plotting Table</span>
+      <span>Team Joseph — Algorithms &amp; Data Structures</span>
+    </footer>
+
+    <dialog id="help-dialog" aria-labelledby="help-title">
+      <div class="dialog-inner">
+        <h2 id="help-title">How to play</h2>
+        <p>Sink all five enemy ships before they sink yours.</p>
+        <ol>
+          <li>
+            <strong>Deploy your fleet.</strong> Choose an opponent and map.
+            Shuffle your ships until you like their formation, then deploy. Your
+            ships occupy 5, 4, 3, 3, and 2 cells.
+          </li>
+          <li>
+            <strong>Fire by coordinate.</strong> Select an unknown coordinate on
+            the enemy board. A cross (×) marks a hit; a dot (•) marks a miss.
+            Islands cannot be targeted.
+          </li>
+          <li>
+            <strong>Fire again on a hit.</strong> Every hit earns another shot.
+            A miss passes the turn to your opponent.
+          </li>
+        </ol>
+        <p>
+          In pass &amp; play, hand the device to the named player before
+          revealing their board. The probability lens estimates ship positions
+          from known shots; it never reveals hidden ships.
+        </p>
+        <form method="dialog">
+          <button type="submit" class="primary">
+            Return to plotting table
+          </button>
+        </form>
+      </div>
+    </dialog>
+
+    <dialog id="stats-dialog" aria-labelledby="stats-title">
+      <div class="dialog-inner">
+        <h2 id="stats-title">Solo record</h2>
+        <p id="stats-content"></p>
+        <p>
+          Completed computer matches on this browser. Clearing site data resets
+          your record.
+        </p>
+        <form method="dialog">
+          <button type="submit" class="primary">Return to game</button>
+        </form>
+      </div>
+    </dialog>
+
+    <dialog id="reset-dialog" aria-labelledby="reset-title">
+      <div class="dialog-inner">
+        <h2 id="reset-title">Leave this match?</h2>
+        <p>
+          Your current match will be lost. Your completed solo record stays
+          saved.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" id="cancel-reset" class="secondary">
+            Keep playing
+          </button>
+          <button type="button" id="confirm-reset" class="primary">
+            Start new match
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="handoff-dialog" aria-labelledby="handoff-title">
+      <div class="dialog-inner">
+        <h2 id="handoff-title">Pass to Player 2</h2>
+        <p id="handoff-copy">Hand over the device, then reveal your station.</p>
+        <button type="button" id="reveal" class="primary">
+          Reveal station
+        </button>
+      </div>
+    </dialog>
+
+    <noscript
+      >This game requires JavaScript to render the interactive plotting
+      grids.</noscript
+    >
+  </body>
 </html>

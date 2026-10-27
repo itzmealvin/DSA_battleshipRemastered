@@ -1,3 +1,58 @@
+# Battleship Remastered
+
+A static naval strategy game built with HTML, CSS and JavaScript modules. Play against the computer or a friend on the same device. No install or build step is required to run the app.
+
+## Run locally
+
+Serve the repository over HTTP (JavaScript modules cannot reliably run through `file://`):
+
+```sh
+python3 -m http.server 5173 --bind 127.0.0.1
+```
+
+Open [localhost:5173](http://localhost:5173). Any static HTTP server works. Serve from the site root because asset URLs start with `/`.
+
+## Play
+
+Choose an opponent and map, shuffle your fleet, then deploy. Sink all five ships to win. A hit earns another shot; a miss passes the turn. Islands cannot be targeted. Use the mouse, touch, or arrow keys and Enter on the target board. The optional probability lens estimates positions from known shots.
+
+In pass & play, hand the device to the named player before revealing their board. Completed solo wins and losses are saved in this browser. Active matches are not saved. There is no online multiplayer or server-side data storage.
+
+## Verify
+
+Core rules use Node's built-in test runner (Node 22.18+; no packages required):
+
+```sh
+node --test tests/game.test.mjs
+```
+
+Optional browser checks use Playwright and axe only as test tools. These are not application dependencies. With the HTTP server running in another terminal:
+
+```sh
+npm install --no-save --package-lock=false playwright@1.64.1 @axe-core/playwright@4.14.0
+npx playwright install chromium
+node tests/browser.mjs
+```
+
+The browser checks cover keyboard shots, resets, shared-device privacy, victory, stored records, and accessibility at 320–1440px. Set `BATTLESHIP_TEST_URL` if the server uses a different address.
+
+## Source and deployment
+
+- `index.html`, `styles/styles.css`: interface and responsive layout.
+- `src/game.js`: fleet generation, turn rules and public-information bot targeting.
+- `src/app.js`: DOM rendering, controls, handoffs and browser storage.
+- `favicon.svg`, `404.html`, `_headers`: static hosting assets.
+- [Cloudflare Workers Builds guide](docs/DEPLOY.md): Git-push deployment with no application build step.
+- [Design decisions](docs/DESIGN.md) and [audit results](docs/AUDIT.md).
+
+The original p5.js implementation has been removed from the active source tree; it remains available in Git history. Course images below are retained for the project archive. `.assetsignore` excludes documentation, tests and archive images from deployment.
+
+---
+
+## Original course project archive
+
+The following describes the original course implementation. Its screenshots, p5.js references and installation instructions are historical; use the instructions above for the current app.
+
 <div id="top" align ="center">
 <img src="./assets/img/banner.gif" alt="Banner">
 </div>
@@ -61,13 +116,13 @@ computer) once we finished coding made all the hard work completely worth it!
 
 ### Team Members :couplekiss_man_man:
 
-| Order |         Name          |     ID      |            Email            |                 Github account                  |                            
-|:-----:|:---------------------:|:-----------:|:---------------------------:|:-----------------------------------------------:|
-|   1   | Nguyen Luan Cong Bang | ITITIU20163 | bangnguyen.071102@gmail.com | [congbangitiu](https://github.com/congbangitiu) |          
+| Order |         Name          |     ID      |            Email            |                 Github account                  |
+| :---: | :-------------------: | :---------: | :-------------------------: | :---------------------------------------------: |
+|   1   | Nguyen Luan Cong Bang | ITITIU20163 | bangnguyen.071102@gmail.com | [congbangitiu](https://github.com/congbangitiu) |
 |   2   |     Pham Minh Vu      | ITDSIU20354 |     pmvu.ityu@gmail.com     |      [PMinhVu](https://github.com/PMinhVu)      |
-|   3   |   Nguyen Quang Dieu   | ITDSIU20031 |     dieu5084@gmail.com      |   [itzmealvin](https://github.com/itzmealvin)   |                            
-|   4   |  Nguyen Hoang Anh Tu  | ITDSIU20090 |     nghganhtu@gmail.com     |    [nghganhtu](https://github.com/nghganhtu)    |                            
-|   5   |     Dang Nhat Huy     | ITITIU20043 |    dnhuy.ityu@gmail.com     |  [Nhathuy1305](https://github.com/Nhathuy1305)  |                            
+|   3   |   Nguyen Quang Dieu   | ITDSIU20031 |     dieu5084@gmail.com      |   [itzmealvin](https://github.com/itzmealvin)   |
+|   4   |  Nguyen Hoang Anh Tu  | ITDSIU20090 |     nghganhtu@gmail.com     |    [nghganhtu](https://github.com/nghganhtu)    |
+|   5   |     Dang Nhat Huy     | ITITIU20043 |    dnhuy.ityu@gmail.com     |  [Nhathuy1305](https://github.com/Nhathuy1305)  |
 
 ### Installation :dart:
 
@@ -103,7 +158,7 @@ strategic planning and intuition, players can become masters of modern-day Battl
 ### Task Allocation :ok_man:
 
 | Order | Task                                                              |  Assignee  | Contribution |
-|:------|:------------------------------------------------------------------|:----------:|:------------:|
+| :---- | :---------------------------------------------------------------- | :--------: | :----------: |
 | 1     | Player class, Menu state, Project Management                      | Cong Bang  |     20%      |
 | 2     | Multi-player State, Single player state, Statistics state         |  Minh Vu   |     20%      |
 | 3     | New map state, Win state calling, Finding assets                  | Quang Dieu |     20%      |
@@ -119,46 +174,54 @@ strategic planning and intuition, players can become masters of modern-day Battl
 
 <br />
 
-
-
 <!-- FEATURES -->
 
 ## Features <a name="Features"></a>:joystick:
+
 ### 1. Class Diagram
+
 <div align="center">
     <img src="./assets/screenshots/class.png" alt="">
 </div>
 <br />
-  
+
 ### 2. Use Case Diagram
+
 #### a. User Goals Use Case
+
 <div align="center">
     <img src="./assets/screenshots/useruc.png" alt="">
 </div>
 
 #### b. Summary Goals Use Case
+
 <div align="center">
     <img src="./assets/screenshots/summaryuc.png" alt="">
 </div>
 <br />
 
 ### 3. Activity Diagram
+
 #### a. Select gameplay options
+
 <div align="center">
     <img src="./assets/screenshots/option.png" alt="">
 </div>
 
 #### b. Generate blocks
+
 <div align="center">
     <img src="./assets/screenshots/generate.png" alt="">
 </div>
 
 #### c. Transfer game states
+
 <div align="center">
     <img src="./assets/screenshots/transfer.png" alt="">
 </div>
 
 #### d. Response automated after player's play steps
+
 <div align="center">
     <img src="./assets/screenshots/response.png" alt="">
 </div>
@@ -188,7 +251,7 @@ on :heart:
 
 <br />
 
-## References<a name="References">  :eye::tongue::eye:
+## References<a name="References"> :eye::tongue::eye:
 
 1. [danielrzhang](https://github.com/danielrzhang/Tank-Buster.git)
 2. [veykos](https://github.com/veykos/Battleships.git)
@@ -204,17 +267,10 @@ on :heart:
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 [contributors-shield]: https://img.shields.io/github/contributors/congbangitiu/Battleship-Remastered.svg?style=for-the-badge
-
 [contributors-url]: https://github.com/congbangitiu/Battleship-Remastered/graphs/contributors
-
 [forks-shield]: https://img.shields.io/github/forks/congbangitiu/Battleship-Remastered.svg?style=for-the-badge
-
 [forks-url]: https://github.com/congbangitiu/Battleship-Remastered/network/members
-
 [stars-shield]: https://img.shields.io/github/stars/congbangitiu/Battleship-Remastered.svg?style=for-the-badge
-
 [stars-url]: https://github.com/congbangitiu/Battleship-Remastered/stargazers
-
 [issues-shield]: https://img.shields.io/github/issues/congbangitiu/Battleship-Remastered.svg?style=for-the-badge
-
 [issues-url]: https://github.com//congbangitiu/Battleship-Remastered/issues
